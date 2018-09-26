@@ -7,4 +7,5 @@ package com.jarry.jarrydaolib.db;
 
 public interface IBaseDao<T> {
     long insert(T bean);
+    List<T> query(String where);
 }
