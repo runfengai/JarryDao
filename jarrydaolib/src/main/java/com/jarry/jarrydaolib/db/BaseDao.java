@@ -154,6 +154,12 @@ public class BaseDao<T> implements IBaseDao<T> {
         return sqLiteDatabase.insert(tableName, null, contentValues);
     }
 
+    @Override
+    public List<T> query(String where){
+    
+    	return null;
+    }
+
     private ContentValues getContentValues(Map<String, String> map) {
         ContentValues contentValues = new ContentValues();
         Set<String> strings = map.keySet();
