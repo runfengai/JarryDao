@@ -165,18 +165,20 @@ public class BaseDao<T> implements IBaseDao<T> {
         //根据map拼装selection和selectionArgs
         StringBuilder selectionSB = new StringBuilder();
         Set<String> keySet = map.keySet();
-        String[] selectionArgs = new String[keySet.size()];
+        String[] selectionArgs = keySet.size() > 0 ? new String[keySet.size()] : null;
+        selectionSB.append(" 1=1 ");
         Iterator<String> iterator = keySet.iterator();
         int index = 0;
         while (iterator.hasNext()) {
             String next = iterator.next();
-            selectionSB.append(next)
+            selectionSB.append(" and ")
+                    .append(next)
                     .append(" = ")
                     .append(" ? ")
-                    .append(" and ");
+                    .append(" ");
             selectionArgs[index++] = map.get(next);
         }
-        selectionSB = selectionSB.replace(selectionSB.length() - " and ".length(), selectionSB.length(), "");
+//        selectionSB = selectionSB.replace(selectionSB.length() - " and ".length(), selectionSB.length(), "");
         String selection = selectionSB.toString();
 
         Cursor cursor = sqLiteDatabase.query(tableName, null, selection, selectionArgs, null, null, null);
