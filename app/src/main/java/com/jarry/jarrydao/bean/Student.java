@@ -9,11 +9,11 @@ import com.jarry.jarrydaolib.annotation.DBTable;
 @DBTable("t_student")
 public class Student {
     @DBField("_id")
-    public int id;
+    public Integer id;
     @DBField("_name")
     public String name;
     @DBField("_age")
-    public int age;
+    public Integer age;
 
     public Student() {
     }
