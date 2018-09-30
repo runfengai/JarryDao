@@ -10,6 +10,7 @@ import com.jarry.jarrydaolib.annotation.DBField;
 import com.jarry.jarrydaolib.annotation.DBTable;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -156,9 +157,67 @@ public class BaseDao<T> implements IBaseDao<T> {
     }
 
     @Override
-    public List<T> query(String where){
-    
-    	return null;
+    public List<T> query(T where) {
+        List<T> list = new ArrayList<>();
+
+        //根据where对象获取查询条件，<K,V>形式
+        Map<String, String> map = getValues(where);
+        //根据map拼装selection和selectionArgs
+        StringBuilder selectionSB = new StringBuilder();
+        Set<String> keySet = map.keySet();
+        String[] selectionArgs = new String[keySet.size()];
+        Iterator<String> iterator = keySet.iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+            selectionSB.append(next)
+                    .append(" = ")
+                    .append(" ? ")
+                    .append(" and ");
+            selectionArgs[index++] = map.get(next);
+        }
+        selectionSB = selectionSB.replace(selectionSB.length() - " and ".length(), selectionSB.length(), "");
+        String selection = selectionSB.toString();
+
+        Cursor cursor = sqLiteDatabase.query(tableName, null, selection, selectionArgs, null, null, null);
+        Object obj = null;
+        while (cursor.moveToNext()) {
+            try {
+                obj = where.getClass().newInstance();//
+                Iterator<Map.Entry<String, Field>> iterator1 = cachedHashMap.entrySet().iterator();
+                while (iterator1.hasNext()) {
+                    Map.Entry<String, Field> next = iterator1.next();
+                    String columnName = next.getKey();
+                    Integer columnIndex = cursor.getColumnIndex(columnName);
+                    Field value = next.getValue();
+                    Class<?> type = value.getType();//数据类型
+                    String name = type.getCanonicalName();
+                    if (columnIndex != -1) {
+                        if (type == String.class) {
+                            value.set(obj, cursor.getString(columnIndex));
+                        } else if (type == Double.class) {
+                            value.set(obj, cursor.getDouble(columnIndex));
+                        } else if (type == Integer.class || name.equals("int")) {
+                            value.set(obj, cursor.getInt(columnIndex));
+                        } else if (type == Long.class) {
+                            value.set(obj, cursor.getLong(columnIndex));
+                        } else if (type == byte[].class) {
+                            value.set(obj, cursor.getBlob(columnIndex));
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+                list.add((T) obj);
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        return list;
     }
 
     private ContentValues getContentValues(Map<String, String> map) {
@@ -175,6 +234,8 @@ public class BaseDao<T> implements IBaseDao<T> {
     }
 
     /**
+     * 根据泛型实体，查询到对应的参数名称（无注解时以成员变量名称代替）-内容的键值对
+     *
      * @param bean
      * @return
      */

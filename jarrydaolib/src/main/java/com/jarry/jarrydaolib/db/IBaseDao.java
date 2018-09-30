@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface IBaseDao<T> {
     long insert(T bean);
-    List<T> query(String where);
+    List<T> query(T where);
 }
