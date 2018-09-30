@@ -14,7 +14,7 @@
         android:text="插入" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="query"
         android:text="查询"

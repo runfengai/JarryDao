@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     public void query(View view) {
         BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
         Student student = new Student();
+        student.age = 18;
         List<Student> studentList = baseDao.query(student);
         TextView viewById = (TextView) findViewById(R.id.text_res);
         for (Student student1 : studentList) {
