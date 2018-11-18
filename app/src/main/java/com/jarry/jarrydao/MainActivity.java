@@ -21,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    private int index = 1;
+
     /**
      * 测试插入数据
      *
@@ -28,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
      */
     public void insertClick(View view) {
         BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
-        baseDao.insert(new Student(1, "jarry", 18));
+        baseDao.insert(new Student(index++, "jarry" + index, 20 + index));
     }
 
     /**
@@ -43,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
 //        student.name = "jarry";
         List<Student> studentList = baseDao.query(student);
         TextView viewById = (TextView) findViewById(R.id.text_res);
+        viewById.setText("");
         for (Student student1 : studentList) {
             viewById.append(student1.id + " ");
             viewById.append(student1.name + " ");
@@ -53,13 +56,22 @@ public class MainActivity extends AppCompatActivity {
     public void update(View view) {
         BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
         Student updateStudent = new Student();
-        updateStudent.name = "Linux";
         updateStudent.age = 50;
         Student whereStu = new Student();
         whereStu.id = 1;
 
         long update = baseDao.update(updateStudent, whereStu);
         Log.d(TAG, "update=" + update);
+
+    }
+
+    public void delete(View view) {
+        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
+        Student updateStudent = new Student();
+        updateStudent.age = 50;
+
+        long delete = baseDao.delete(updateStudent);
+        Log.d(TAG, "delete=" + delete);
 
     }
 }
