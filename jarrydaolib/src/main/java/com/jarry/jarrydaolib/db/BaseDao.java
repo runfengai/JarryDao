@@ -32,7 +32,7 @@ public class BaseDao<T> implements IBaseDao<T> {
     private boolean isInit = false;
     private HashMap<String, Field> cachedHashMap;//缓存数据库字段-参数对应关系
 
-    protected boolean init(SQLiteDatabase sqLiteDatabase, Class<T> entityClass) {
+    public boolean init(SQLiteDatabase sqLiteDatabase, Class<T> entityClass) {
         this.sqLiteDatabase = sqLiteDatabase;
         this.entityClass = entityClass;
 
