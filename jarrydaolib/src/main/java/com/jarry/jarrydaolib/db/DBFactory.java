@@ -26,16 +26,16 @@ public class DBFactory {
     private DBFactory() {
     }
 
-    public <T> BaseDao<T> getBaseDao(Class<T> entityClass) {
+    public <T extends BaseDao<M>, M> T getBaseDao(Class<T> baseDaoClazz, Class<M> entityClass) {
 
         File cacheDir = appContext.getCacheDir();
         Log.d(TAG, "cacheDir:" + cacheDir);
         sqLiteDatabase = SQLiteDatabase.openOrCreateDatabase(cacheDir + File.separator + DB_NAME, null);
 
 
-        BaseDao<T> baseDao = null;
+        T baseDao = null;
         try {
-            baseDao = BaseDao.class.newInstance();
+            baseDao = baseDaoClazz.newInstance();
             baseDao.init(sqLiteDatabase, entityClass);
         } catch (InstantiationException e) {
             e.printStackTrace();

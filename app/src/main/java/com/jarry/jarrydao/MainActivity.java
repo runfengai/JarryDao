@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.jarry.jarrydao.bean.Student;
 import com.jarry.jarrydaolib.db.BaseDao;
 import com.jarry.jarrydaolib.db.DBFactory;
+import com.jarry.jarrydaolib.db.DaoImpl;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void insertClick(View view) {
-        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
-        baseDao.insert(new Student(index++, "jarry" + index, 20 + index));
+        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(DaoImpl.class, Student.class);
+        baseDao.insert(new Student((index++) % 10, "jarry" + index, 20 + index));
     }
 
     /**
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void query(View view) {
-        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
+        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(DaoImpl.class, Student.class);
         Student student = new Student();
 //        student.age = 18;
 //        student.name = "jarry";
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void update(View view) {
-        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
+        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(DaoImpl.class, Student.class);
         Student updateStudent = new Student();
         updateStudent.age = 50;
         Student whereStu = new Student();
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void delete(View view) {
-        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
+        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(DaoImpl.class, Student.class);
         Student updateStudent = new Student();
         updateStudent.age = 50;
 
