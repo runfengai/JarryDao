@@ -157,6 +157,24 @@ public class BaseDao<T> implements IBaseDao<T> {
     }
 
     @Override
+    public long update(T entity, T where) {
+        long res = -1;
+        Map<String, String> values = getValues(entity);
+        ContentValues contentValues = getContentValues(values);
+
+        //条件语句， "id = ?" , new String[]{"123"}
+        Map whereMap = getValues(where);
+
+        //获取对应的Condition,用于拼装最后的执行语句
+        Condition condition = new Condition(whereMap);
+
+        res = sqLiteDatabase.update(tableName, contentValues, condition.whereCause, condition.whereArgs);
+
+
+        return res;
+    }
+
+    @Override
     public List<T> query(T where) {
         List<T> list = new ArrayList<>();
 
@@ -268,5 +286,38 @@ public class BaseDao<T> implements IBaseDao<T> {
 
         }
         return map;
+    }
+
+    /**
+     * 拼装条件语句的
+     */
+    private class Condition {
+        public String whereCause;
+        private String[] whereArgs;
+
+
+        public Condition(Map<String, String> where) {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("1=1");
+            Set set = where.keySet();
+            int size = set.size();
+            //where参数拼装
+            ArrayList<String> whereArg = new ArrayList<>();
+
+            Iterator iterator = set.iterator();
+            while (iterator.hasNext()) {
+                String key = (String) iterator.next();
+                String value = where.get(key);
+                //拼装字符串
+                stringBuilder.append(" and " + key + "= ?");
+                whereArg.add(value);
+            }
+            this.whereCause = stringBuilder.toString();
+            this.whereArgs = whereArg.toArray(new String[size]);
+
+        }
+
+
     }
 }

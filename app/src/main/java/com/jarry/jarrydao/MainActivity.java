@@ -2,6 +2,7 @@ package com.jarry.jarrydao;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import com.jarry.jarrydaolib.db.DBFactory;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
     public void query(View view) {
         BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
         Student student = new Student();
-        student.age = 18;
-        student.name="jarry";
+//        student.age = 18;
+//        student.name = "jarry";
         List<Student> studentList = baseDao.query(student);
         TextView viewById = (TextView) findViewById(R.id.text_res);
         for (Student student1 : studentList) {
@@ -46,5 +48,18 @@ public class MainActivity extends AppCompatActivity {
             viewById.append(student1.name + " ");
             viewById.append(student1.age + " ");
         }
+    }
+
+    public void update(View view) {
+        BaseDao<Student> baseDao = DBFactory.getInstance(this).getBaseDao(Student.class);
+        Student updateStudent = new Student();
+        updateStudent.name = "Linux";
+        updateStudent.age = 50;
+        Student whereStu = new Student();
+        whereStu.id = 1;
+
+        long update = baseDao.update(updateStudent, whereStu);
+        Log.d(TAG, "update=" + update);
+
     }
 }
