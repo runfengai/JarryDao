@@ -183,6 +183,12 @@ public class BaseDao<T> implements IBaseDao<T> {
 
     @Override
     public List<T> query(T where) {
+        return query(where, null, null, null);
+    }
+
+    @Override
+    public List<T> query(T where, String groupBy, String having,
+                         String orderBy) {
         List<T> list = new ArrayList<>();
 
         //根据where对象获取查询条件，<K,V>形式
